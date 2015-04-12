@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/cursor.png</file>
+        <file>icons/cursor_fill.png</file>
+        <file>icons/cursor_loupe.png</file>
+        <file>icons/cursor_pipette.png</file>
+        <file>icons/cursor_spray.png</file>
+        <file>icons/curve.png</file>
+        <file>icons/ellipse.png</file>
+        <file>icons/fill.png</file>
+        <file>icons/lastic.png</file>
+        <file>icons/line.png</file>
+        <file>icons/loupe.png</file>
+        <file>icons/pencil.png</file>
+        <file>icons/pipette.png</file>
+        <file>icons/rectangle.png</file>
+        <file>icons/spray.png</file>
+        <file>icons/text.png</file>
+    </qresource>
+</RCC>
