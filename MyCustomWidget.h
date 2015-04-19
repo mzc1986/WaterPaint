@@ -1,5 +1,7 @@
 #pragma once
 
+#include "shapes.h"
+
 #include <QPainter>
 #include <QWidget>
 
@@ -26,6 +28,9 @@ public:
 
     void setCurrentFile(const QString &fileName);
     QSize sizeHint() const;
+    void setDrawingObject(Shapes &b);
+    Shapes *myShape;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

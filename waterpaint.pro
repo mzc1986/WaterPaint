@@ -14,10 +14,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    MyCustomWidget.cpp
+    MyCustomWidget.cpp \
+#    shapes.cpp \
+    mylineshape.cpp
+
+CONFIG += c++11
 
 HEADERS  += mainwindow.h \
-    MyCustomWidget.h
+    MyCustomWidget.h \
+    shapes.h \
+    mylineshape.h
 
 FORMS    += mainwindow.ui
 

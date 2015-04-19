@@ -25,7 +25,6 @@ public:
 private slots:
     void on_actionPlace_a_window_triggered();
 
-    void on_actionRect_triggered();
 
     void on_actionTile_triggered();
 
@@ -39,7 +38,12 @@ private slots:
 
     void on_actionClose_triggered();
 
+    void on_actionRect_triggered();
     void on_actionLine_triggered();
+
+    MyCustomWidget* activeMdiChild();
+
+    void on_actionEllipse_triggered();
 
 private:
     Ui::MainWindow *ui;

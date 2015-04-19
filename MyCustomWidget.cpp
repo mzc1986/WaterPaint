@@ -6,6 +6,11 @@
 #include <QTextStream>
 #include <QtWidgets>
 #include "ui_mainwindow.h"
+#include "shapes.h"
+#include "mylineshape.h"
+#include <memory.h>
+
+using namespace std;
 
 MyCustomWidget::MyCustomWidget(QWidget *parent) :
     QWidget(parent)//,
@@ -13,8 +18,11 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
 {
     //ui->setupUi(this);
 
-    mPix = QPixmap(QWidget::size());
-    mPix.fill(Qt::white);
+    mPix = QPixmap(QWidget::size()); //400,400
+   mPix.fill(Qt::white);
+    //painter.begin(&mPix);
+
+   //myShape = 0;
 
     //set everything to false as nothing has started yet
     mousePressed = false;
@@ -26,7 +34,19 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
     myPenColor = Qt::blue;
     myPenWidth = 1;
 
+    struct vertex{
+    int x;
+    int y;
+    vertex* next;
+    };
+
     //connect(ui.)
+}
+
+void MyCustomWidget::setDrawingObject(Shapes &b){
+   myShape = &b;
+   //myShape.reset(b.clone());
+   myShape->setPoint1();
 }
 
 void MyCustomWidget::setPenColor(const QColor &color)
@@ -43,6 +63,8 @@ void MyCustomWidget::setPenWidth(int w)
 void MyCustomWidget::mousePressEvent(QMouseEvent* event){
     //Mouse is pressed for the first time
     mousePressed = true;
+
+  //myShape.setPoint1();
 
     //set the initial line points, both are same
     if(selectedTool == 1){

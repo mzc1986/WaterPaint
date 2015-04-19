@@ -290,6 +290,7 @@
     </property>
     <addaction name="actionLine"/>
     <addaction name="actionRect"/>
+    <addaction name="actionEllipse"/>
     <addaction name="actionPen_Color"/>
     <addaction name="actionPen_Width"/>
    </widget>
@@ -371,6 +372,11 @@
   <action name="actionPen_Width">
    <property name="text">
     <string>Pen Width...</string>
+   </property>
+  </action>
+  <action name="actionEllipse">
+   <property name="text">
+    <string>ellipse</string>
    </property>
   </action>
  </widget>

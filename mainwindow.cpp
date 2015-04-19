@@ -4,13 +4,14 @@
 #include <QFileDialog>
 #include <QtWidgets>
 #include "MyCustomWidget.h"
+#include "mylineshape.h"
+#include "shapes.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
 }
 
@@ -21,22 +22,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionPlace_a_window_triggered()
 {
-   customWidget = new MyCustomWidget();
+    customWidget = new MyCustomWidget();
     customWidget->setWindowFlags(Qt::Window);
     ui->myMDI->addSubWindow(customWidget);
     ui->myMDI->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     ui->myMDI->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     customWidget->show();
 
-     connect(ui->btnLine,SIGNAL(clicked()),this, SLOT(on_actionLine_triggered()));
-     connect(ui->btnRectangle,SIGNAL(clicked()),this, SLOT(on_actionRect_triggered()));
-     connect(ui->btnEllipse,SIGNAL(clicked()),customWidget, SLOT(setSelectedTool2()));
+    connect(ui->btnLine,SIGNAL(clicked()),this, SLOT(on_actionLine_triggered()));
+    connect(ui->btnRectangle,SIGNAL(clicked()),this, SLOT(on_actionRect_triggered()));
+    connect(ui->btnEllipse,SIGNAL(clicked()),this, SLOT(on_actionEllipse_triggered()));
 }
 
 
 void MainWindow::on_actionTile_triggered()
 {
     ui->myMDI->tileSubWindows();
+
 }
 
 void MainWindow::on_actionCascade_triggered()
@@ -48,11 +50,11 @@ void MainWindow::on_OpenFile_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty()) {
-//        QMdiSubWindow *existing = findMdiChild(fileName);
-//        if (existing) {
-//            ui->myMDI->setActiveSubWindow(existing);
-//            return;
-//        }
+        //        QMdiSubWindow *existing = findMdiChild(fileName);
+        //        if (existing) {
+        //            ui->myMDI->setActiveSubWindow(existing);
+        //            return;
+        //        }
 
         if (openFile(fileName))
             statusBar()->showMessage(tr("File loaded"), 2000);
@@ -102,9 +104,9 @@ void MainWindow::on_actionPen_Width_triggered()
 {
     bool ok;
     int newWidth = QInputDialog::getInt(this, tr("Scribble"),
-                                            tr("Select pen width:"),
-                                            customWidget->penWidth(),
-                                            1, 50, 1, &ok);
+                                        tr("Select pen width:"),
+                                        customWidget->penWidth(),
+                                        1, 50, 1, &ok);
     if (ok)
         customWidget->setPenWidth(newWidth);
 }
@@ -116,11 +118,42 @@ void MainWindow::on_actionClose_triggered()
 
 void MainWindow::on_actionLine_triggered()
 {
-    customWidget->setSelectedTool(2);
+    if(!activeMdiChild()) return;
+    MyCustomWidget *actCustomWidget = activeMdiChild();
+//    actCustomWidget->setSelectedTool(2);
+
+    //Shapes myLine;
+    MyLineShape b;
+    //Polymorphic usage through reference
+    //Shapes& myLine = b;
+
+    actCustomWidget->setDrawingObject(b);
+
+    //myLine.setPoint1();
+    //myLine.setPoint2();
+
+    //MyLineShape myLine = new MyLineShape();
 }
 
 void MainWindow::on_actionRect_triggered()
 {
-    customWidget->setSelectedTool(1);
+    if(!activeMdiChild()) return;
+    MyCustomWidget *actCustomWidget = activeMdiChild();
+
+    actCustomWidget->setSelectedTool(1);
 }
 
+MyCustomWidget *MainWindow::activeMdiChild()
+{
+    if (QMdiSubWindow *activeSubWindow = ui->myMDI->activeSubWindow())
+        return qobject_cast<MyCustomWidget *>(activeSubWindow->widget());   //returns 0 if no casting possible
+    return 0;
+}
+
+void MainWindow::on_actionEllipse_triggered()
+{
+    if(!activeMdiChild()) return;
+    MyCustomWidget *actCustomWidget = activeMdiChild();
+
+    actCustomWidget->setSelectedTool(3);
+}
