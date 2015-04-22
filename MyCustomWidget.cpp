@@ -44,9 +44,11 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
 }
 
 void MyCustomWidget::setDrawingObject(Shapes &b){
-   myShape = &b;
+    Shapes temp = b;
+    myShape = temp;
+//   myShape = &b;
    //myShape.reset(b.clone());
-   myShape->setPoint1();
+   myShape.setPoint1();
 }
 
 void MyCustomWidget::setPenColor(const QColor &color)
@@ -65,6 +67,7 @@ void MyCustomWidget::mousePressEvent(QMouseEvent* event){
     mousePressed = true;
 
   //myShape.setPoint1();
+
 
     //set the initial line points, both are same
     if(selectedTool == 1){

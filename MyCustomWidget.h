@@ -29,7 +29,7 @@ public:
     void setCurrentFile(const QString &fileName);
     QSize sizeHint() const;
     void setDrawingObject(Shapes &b);
-    Shapes *myShape;
+    Shapes myShape;
 
 protected:
     void mousePressEvent(QMouseEvent *event);

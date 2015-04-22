@@ -1,6 +1,5 @@
 #include "mylineshape.h"
 #include <qdebug.h>
-
 MyLineShape::MyLineShape()
 {
 

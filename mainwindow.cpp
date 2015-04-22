@@ -6,7 +6,7 @@
 #include "MyCustomWidget.h"
 #include "mylineshape.h"
 #include "shapes.h"
-
+#include <QDebug>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -126,7 +126,7 @@ void MainWindow::on_actionLine_triggered()
     MyLineShape b;
     //Polymorphic usage through reference
     //Shapes& myLine = b;
-
+    //qDebug()<<b;
     actCustomWidget->setDrawingObject(b);
 
     //myLine.setPoint1();
