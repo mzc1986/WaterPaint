@@ -5,14 +5,16 @@
 #include <QtWidgets>
 #include "MyCustomWidget.h"
 #include "mylineshape.h"
+#include "myrectangleshape.h"
+#include "myellipseshape.h"
 #include "shapes.h"
 #include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 }
 
 MainWindow::~MainWindow()
@@ -120,19 +122,11 @@ void MainWindow::on_actionLine_triggered()
 {
     if(!activeMdiChild()) return;
     MyCustomWidget *actCustomWidget = activeMdiChild();
-//    actCustomWidget->setSelectedTool(2);
 
-    //Shapes myLine;
-    MyLineShape b;
+    //Creating a MyLineShape pointer for later use
+    MyLineShape *b = new MyLineShape;
     //Polymorphic usage through reference
-    //Shapes& myLine = b;
-    //qDebug()<<b;
     actCustomWidget->setDrawingObject(b);
-
-    //myLine.setPoint1();
-    //myLine.setPoint2();
-
-    //MyLineShape myLine = new MyLineShape();
 }
 
 void MainWindow::on_actionRect_triggered()
@@ -140,7 +134,20 @@ void MainWindow::on_actionRect_triggered()
     if(!activeMdiChild()) return;
     MyCustomWidget *actCustomWidget = activeMdiChild();
 
-    actCustomWidget->setSelectedTool(1);
+    MyRectangleShape *r = new MyRectangleShape;
+
+    actCustomWidget->setDrawingObject(r);
+
+}
+
+void MainWindow::on_actionEllipse_triggered()
+{
+    if(!activeMdiChild()) return;
+
+    MyCustomWidget *actCustomWidget = activeMdiChild();
+    MyEllipseShape *el = new MyEllipseShape;
+    actCustomWidget->setDrawingObject(el);
+
 }
 
 MyCustomWidget *MainWindow::activeMdiChild()
@@ -150,10 +157,3 @@ MyCustomWidget *MainWindow::activeMdiChild()
     return 0;
 }
 
-void MainWindow::on_actionEllipse_triggered()
-{
-    if(!activeMdiChild()) return;
-    MyCustomWidget *actCustomWidget = activeMdiChild();
-
-    actCustomWidget->setSelectedTool(3);
-}

@@ -28,8 +28,8 @@ public:
 
     void setCurrentFile(const QString &fileName);
     QSize sizeHint() const;
-    void setDrawingObject(Shapes &b);
-    Shapes myShape;
+    void setDrawingObject(Shapes *b);
+    Shapes *myShape;
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -38,16 +38,14 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 public slots:
-    void setSelectedTool(int t);
-    void setSelectedTool2();
 
 private:
     Ui::MyCustomWidget *ui;
     QPainter painter;
     QPixmap mPix;
-    QLine mLine;
-    QRect mRect;
-    QRect mEllipse;
+    //QLine mLine;
+    //QRect mRect;
+    //QRect mEllipse;
     QString curFile;
     bool isUntitled;
 

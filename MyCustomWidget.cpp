@@ -8,21 +8,23 @@
 #include "ui_mainwindow.h"
 #include "shapes.h"
 #include "mylineshape.h"
+#include "myrectangleshape.h"
+#include "myellipseshape.h"
 #include <memory.h>
 
 using namespace std;
 
 MyCustomWidget::MyCustomWidget(QWidget *parent) :
     QWidget(parent)//,
-    //ui(new Ui::MyCustomWidget)
+  //ui(new Ui::MyCustomWidget)
 {
     //ui->setupUi(this);
 
     mPix = QPixmap(QWidget::size()); //400,400
-   mPix.fill(Qt::white);
+    mPix.fill(Qt::white);
     //painter.begin(&mPix);
 
-   //myShape = 0;
+    //myShape = 0;
 
     //set everything to false as nothing has started yet
     mousePressed = false;
@@ -34,21 +36,15 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
     myPenColor = Qt::blue;
     myPenWidth = 1;
 
-    struct vertex{
-    int x;
-    int y;
-    vertex* next;
-    };
-
     //connect(ui.)
 }
 
-void MyCustomWidget::setDrawingObject(Shapes &b){
-    Shapes temp = b;
-    myShape = temp;
-//   myShape = &b;
-   //myShape.reset(b.clone());
-   myShape.setPoint1();
+void MyCustomWidget::setDrawingObject(Shapes *b){
+
+    //myShape is a Shapes class pointer which stores the passed pointer
+    //for later use
+    myShape = b;
+
 }
 
 void MyCustomWidget::setPenColor(const QColor &color)
@@ -66,23 +62,10 @@ void MyCustomWidget::mousePressEvent(QMouseEvent* event){
     //Mouse is pressed for the first time
     mousePressed = true;
 
-  //myShape.setPoint1();
-
-
-    //set the initial line points, both are same
-    if(selectedTool == 1){
-        mRect.setTopLeft(event->pos());
-        mRect.setBottomRight(event->pos());
-    }
-    else if (selectedTool == 2){
-        mLine.setP1(event->pos());
-        mLine.setP2(event->pos());
-    }
-    else if(selectedTool == 3)
-    {
-        mEllipse.setTopLeft(event->pos());
-        mEllipse.setBottomRight(event->pos());
-    }
+    //depending on Object type setPoint methods of
+    //Different object is called
+    myShape->setPoint1(event->pos());
+    myShape->setPoint2(event->pos());
 }
 
 void MyCustomWidget::mouseMoveEvent(QMouseEvent* event){
@@ -90,15 +73,7 @@ void MyCustomWidget::mouseMoveEvent(QMouseEvent* event){
     //As mouse is moving set the second point again and again
     // and update continuously
     if(event->type() == QEvent::MouseMove){
-        if(selectedTool == 1){
-            mRect.setBottomRight(event->pos());
-        }
-        else if (selectedTool == 2){
-            mLine.setP2(event->pos());
-        }
-        else if (selectedTool == 3){
-            mEllipse.setBottomRight(event->pos());
-        }
+        myShape->setPoint2(event->pos());
     }
 
     //it calls the paintEven() function continuously
@@ -114,23 +89,32 @@ void MyCustomWidget::mouseReleaseEvent(QMouseEvent *event){
 
 void MyCustomWidget::paintEvent(QPaintEvent *event){
 
-
     painter.begin(this);
 
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
+
     //When the mouse is pressed
     if(mousePressed){
         // we are taking QPixmap reference again and again
         //on mouse move and drawing a line again and again
         //hence the painter view has a feeling of dynamic drawing
         painter.drawPixmap(0,0,mPix);
-        if(selectedTool == 1)
-            painter.drawRect(mRect);
-        else if(selectedTool == 2)
-            painter.drawLine(mLine);
-        else if(selectedTool ==3)
-            painter.drawEllipse(mEllipse);
+
+        /*Depending on myShape type object from those shapes are called
+            for painting on the painter using appropriate method,
+            benefit is we don't need to know Shape type beforehand */
+        if(dynamic_cast<MyLineShape*>(myShape)){
+            painter.drawLine(dynamic_cast<MyLineShape*>(myShape)->qline);
+        }
+        else if(dynamic_cast<MyRectangleShape*>(myShape))
+        {
+            painter.drawRect(dynamic_cast<MyRectangleShape*>(myShape)->qRect);
+        }
+        else if(dynamic_cast<MyEllipseShape*>(myShape))
+        {
+            painter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShape)->qEllipse);
+        }
 
         drawStarted = true;
     }
@@ -141,16 +125,25 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         // with the newly modified QPixmap object
         QPainter tempPainter(&mPix);
         tempPainter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
-                            Qt::RoundJoin));
-        if(selectedTool == 1)
-            tempPainter.drawRect(mRect);
-        else if(selectedTool == 2)
-            tempPainter.drawLine(mLine);
-        else if(selectedTool == 3)
-            tempPainter.drawEllipse(mEllipse);
+                                Qt::RoundJoin));
+
+        if(dynamic_cast<MyRectangleShape*>(myShape))
+        {
+            tempPainter.drawRect(dynamic_cast<MyRectangleShape*>(myShape)->qRect);
+        }
+        else if(dynamic_cast<MyLineShape*>(myShape))
+        {
+            tempPainter.drawLine(dynamic_cast<MyLineShape*>(myShape)->qline);
+
+            dynamic_cast<MyLineShape*>(myShape)->print();
+        }
+        else if(dynamic_cast<MyEllipseShape*>(myShape)){
+            tempPainter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShape)->qEllipse);
+        }
 
         painter.drawPixmap(0,0,mPix);
     }
+
 
     painter.end();
 }
@@ -159,17 +152,6 @@ MyCustomWidget::~MyCustomWidget()
 {
     //delete ui;
 }
-
-void MyCustomWidget::setSelectedTool(int t)
-{
-    selectedTool = t;
-}
-
-void MyCustomWidget::setSelectedTool2()
-{
-    selectedTool = 3;
-}
-
 
 bool MyCustomWidget::loadFile(const QString &fileName)
 {
@@ -191,8 +173,8 @@ bool MyCustomWidget::loadFile(const QString &fileName)
 
     setCurrentFile(fileName);
 
-//    connect(document(), SIGNAL(contentsChanged()),
-//            this, SLOT(documentWasModified()));
+    //    connect(document(), SIGNAL(contentsChanged()),
+    //            this, SLOT(documentWasModified()));
 
     return true;
 }
@@ -210,6 +192,6 @@ void MyCustomWidget::setCurrentFile(const QString &fileName)
 QSize MyCustomWidget::sizeHint() const
 {
     return QSize(72 * fontMetrics().width('x'),
-            25 * fontMetrics().lineSpacing());
+                 25 * fontMetrics().lineSpacing());
 
 }

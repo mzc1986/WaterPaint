@@ -16,14 +16,18 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     MyCustomWidget.cpp \
 #    shapes.cpp \
-    mylineshape.cpp
+    mylineshape.cpp \
+    myrectangleshape.cpp \
+    myellipseshape.cpp
 
 CONFIG += c++11
 
 HEADERS  += mainwindow.h \
     MyCustomWidget.h \
     shapes.h \
-    mylineshape.h
+    mylineshape.h \
+    myrectangleshape.h \
+    myellipseshape.h
 
 FORMS    += mainwindow.ui
 
