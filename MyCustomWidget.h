@@ -1,7 +1,7 @@
 #pragma once
 
 #include "shapes.h"
-
+#include "mylineshape.h"
 #include <QPainter>
 #include <QWidget>
 
@@ -24,6 +24,9 @@ public:
     int penWidth() const {return myPenWidth;}
     ~MyCustomWidget();
 
+    //Creating a vector to store the shapes
+    vector<Shapes*> myShapeVector;
+
     bool loadFile(const QString &fileName);
 
     void setCurrentFile(const QString &fileName);
@@ -31,6 +34,8 @@ public:
     void setDrawingObject(Shapes *b);
     Shapes *myShape;
 
+    void printShapes();
+    bool undoVar;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

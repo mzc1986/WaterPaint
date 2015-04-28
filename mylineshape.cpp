@@ -20,6 +20,6 @@ void MyLineShape::setPoint2(QPoint p2)
 
 void MyLineShape::print()
 {
-    qDebug() << qline.p1();
-    qDebug() << qline.p2();
+    qDebug() << qline;
+    //qDebug() << qline.p2();
 }

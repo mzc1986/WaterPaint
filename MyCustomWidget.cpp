@@ -24,7 +24,10 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
     mPix.fill(Qt::white);
     //painter.begin(&mPix);
 
-    //myShape = 0;
+    //Default is a LineShape, so we save a MyLineShape
+    // pointer to myShape
+    MyLineShape *mL = new MyLineShape;
+    myShape = mL;
 
     //set everything to false as nothing has started yet
     mousePressed = false;
@@ -36,6 +39,8 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
     myPenColor = Qt::blue;
     myPenWidth = 1;
 
+    undoVar = false;
+
     //connect(ui.)
 }
 
@@ -45,6 +50,22 @@ void MyCustomWidget::setDrawingObject(Shapes *b){
     //for later use
     myShape = b;
 
+}
+
+void MyCustomWidget::printShapes(){
+//    for(std::vector<Shapes*>::iterator it = myShapeVector.begin(); it != myShapeVector.end(); ++it) {
+//        /* std::cout << *it; ... */
+//        //cout << *it;
+//        //cout << myShapeVector[0];
+//        //myShapeVector;
+//        qDebug() << dynamic_cast<MyLineShape*>(myShapeVector[1])->qline.p1();
+//        qDebug() << "Print something";
+//    }
+
+
+    undoVar = true;
+    update();
+    //qDebug() << myShapeVector.;
 }
 
 void MyCustomWidget::setPenColor(const QColor &color)
@@ -62,6 +83,8 @@ void MyCustomWidget::mousePressEvent(QMouseEvent* event){
     //Mouse is pressed for the first time
     mousePressed = true;
 
+    /*Checking if the MyShape object is the MyLineShape
+    type then create a new object of that type*/
     //depending on Object type setPoint methods of
     //Different object is called
     myShape->setPoint1(event->pos());
@@ -117,8 +140,9 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         }
 
         drawStarted = true;
+        undoVar = false;
     }
-    else if (drawStarted){
+    else if (drawStarted && !undoVar){
         // It created a QPainter object by taking  a reference
         // to the QPixmap object created earlier, then draws a line
         // using that object, then sets the earlier painter object
@@ -134,16 +158,46 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         else if(dynamic_cast<MyLineShape*>(myShape))
         {
             tempPainter.drawLine(dynamic_cast<MyLineShape*>(myShape)->qline);
-
-            dynamic_cast<MyLineShape*>(myShape)->print();
         }
         else if(dynamic_cast<MyEllipseShape*>(myShape)){
             tempPainter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShape)->qEllipse);
         }
 
-        painter.drawPixmap(0,0,mPix);
-    }
+            //saving shapes in a vector
+            myShapeVector.push_back((myShape));
 
+        painter.drawPixmap(0,0,mPix);
+        undoVar = false;
+    }
+    else if (undoVar){
+        if(!myShapeVector.empty())
+        {
+        myShapeVector.pop_back();
+
+        mPix.fill(Qt::white);
+        QPainter tempPainter(&mPix);
+        tempPainter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                                Qt::RoundJoin));
+
+        unsigned int size = myShapeVector.size();
+        qDebug() << size;
+        for (unsigned int i = 0; i < size; i++)
+        {
+            if(dynamic_cast<MyRectangleShape*>(myShapeVector[i]))
+            {
+                tempPainter.drawRect(dynamic_cast<MyRectangleShape*>(myShapeVector[i])->qRect);
+            }
+            else if(dynamic_cast<MyLineShape*>(myShapeVector[i]))
+            {
+                tempPainter.drawLine(dynamic_cast<MyLineShape*>(myShapeVector[i])->qline);
+            }
+            else if(dynamic_cast<MyEllipseShape*>(myShapeVector[i])){
+                tempPainter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShapeVector[i])->qEllipse);
+            }
+        }
+        painter.drawPixmap(0,0,mPix);
+        }
+    }
 
     painter.end();
 }

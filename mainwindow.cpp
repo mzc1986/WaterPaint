@@ -113,6 +113,7 @@ void MainWindow::on_actionPen_Width_triggered()
         customWidget->setPenWidth(newWidth);
 }
 
+
 void MainWindow::on_actionClose_triggered()
 {
     ui->myMDI->closeAllSubWindows();
@@ -125,6 +126,7 @@ void MainWindow::on_actionLine_triggered()
 
     //Creating a MyLineShape pointer for later use
     MyLineShape *b = new MyLineShape;
+
     //Polymorphic usage through reference
     actCustomWidget->setDrawingObject(b);
 }
@@ -146,6 +148,7 @@ void MainWindow::on_actionEllipse_triggered()
 
     MyCustomWidget *actCustomWidget = activeMdiChild();
     MyEllipseShape *el = new MyEllipseShape;
+
     actCustomWidget->setDrawingObject(el);
 
 }
@@ -157,3 +160,12 @@ MyCustomWidget *MainWindow::activeMdiChild()
     return 0;
 }
 
+
+void MainWindow::on_actionUndo_triggered()
+{
+    if(!activeMdiChild()) return;
+    MyCustomWidget *actCustomWidget = activeMdiChild();
+
+    //Polymorphic usage through reference
+    actCustomWidget->printShapes();
+}

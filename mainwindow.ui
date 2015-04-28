@@ -298,6 +298,7 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionUndo"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -377,6 +378,14 @@
   <action name="actionEllipse">
    <property name="text">
     <string>ellipse</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
    </property>
   </action>
  </widget>
