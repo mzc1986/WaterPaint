@@ -85,6 +85,18 @@ void MyCustomWidget::mousePressEvent(QMouseEvent* event){
 
     /*Checking if the MyShape object is the MyLineShape
     type then create a new object of that type*/
+    if(dynamic_cast<MyLineShape*>(myShape))
+    {
+        myShape = new MyLineShape;
+    }
+    else if(dynamic_cast<MyRectangleShape*>(myShape))
+    {
+        myShape = new MyRectangleShape;
+    }
+    else if(dynamic_cast<MyEllipseShape*>(myShape))
+    {
+        myShape = new MyEllipseShape;
+    }
     //depending on Object type setPoint methods of
     //Different object is called
     myShape->setPoint1(event->pos());
@@ -170,6 +182,7 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         undoVar = false;
     }
     else if (undoVar){
+
         if(!myShapeVector.empty())
         {
         myShapeVector.pop_back();
