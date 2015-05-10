@@ -8,6 +8,7 @@
 #include "myrectangleshape.h"
 #include "myellipseshape.h"
 #include "shapes.h"
+#include "mypenshape.h"
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,6 +32,7 @@ void MainWindow::on_actionPlace_a_window_triggered()
     ui->myMDI->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     customWidget->show();
 
+    connect(ui->btnPen,SIGNAL(clicked()),this, SLOT(on_actionPen_triggered()));
     connect(ui->btnLine,SIGNAL(clicked()),this, SLOT(on_actionLine_triggered()));
     connect(ui->btnRectangle,SIGNAL(clicked()),this, SLOT(on_actionRect_triggered()));
     connect(ui->btnEllipse,SIGNAL(clicked()),this, SLOT(on_actionEllipse_triggered()));
@@ -118,6 +120,19 @@ void MainWindow::on_actionClose_triggered()
 {
     ui->myMDI->closeAllSubWindows();
 }
+
+void MainWindow::on_actionPen_triggered()
+{
+    if(!activeMdiChild()) return;
+    MyCustomWidget *actCustomWidget = activeMdiChild();
+
+    //Creating a MyLineShape pointer for later use
+    MyPenShape *b = new MyPenShape;
+
+    //Polymorphic usage through reference
+    actCustomWidget->setDrawingObject(b);
+}
+
 
 void MainWindow::on_actionLine_triggered()
 {

@@ -101,7 +101,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QPushButton" name="pushButton_6">
+       <widget class="QPushButton" name="btnPen">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -288,6 +288,7 @@
     <property name="title">
      <string>Draw</string>
     </property>
+    <addaction name="actionPencil"/>
     <addaction name="actionLine"/>
     <addaction name="actionRect"/>
     <addaction name="actionEllipse"/>
@@ -386,6 +387,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionPencil">
+   <property name="text">
+    <string>Pencil</string>
    </property>
   </action>
  </widget>

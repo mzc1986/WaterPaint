@@ -1,4 +1,5 @@
 #include "MyCustomWidget.h"
+#include "mypenshape.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -89,6 +90,10 @@ void MyCustomWidget::mousePressEvent(QMouseEvent* event){
     {
         myShape = new MyLineShape;
     }
+    else if(dynamic_cast<MyPenShape*>(myShape))
+    {
+        myShape = new MyPenShape;
+    }
     else if(dynamic_cast<MyRectangleShape*>(myShape))
     {
         myShape = new MyRectangleShape;
@@ -108,7 +113,7 @@ void MyCustomWidget::mouseMoveEvent(QMouseEvent* event){
     //As mouse is moving set the second point again and again
     // and update continuously
     if(event->type() == QEvent::MouseMove){
-        myShape->setPoint2(event->pos());
+            myShape->setPoint2(event->pos());
     }
 
     //it calls the paintEven() function continuously
@@ -142,6 +147,25 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         if(dynamic_cast<MyLineShape*>(myShape)){
             painter.drawLine(dynamic_cast<MyLineShape*>(myShape)->qline);
         }
+        else if(dynamic_cast<MyPenShape*>(myShape)){
+            //dynamic_cast<MyPenShape*>(myShape)->setPoint1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
+            //dynamic_cast<MyPenShape*>(myShape)->qline.setP1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
+           QPainter tPainter(&mPix);
+           tPainter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                                   Qt::RoundJoin));
+           tPainter.drawLine(dynamic_cast<MyPenShape*>(myShape)->qline.p1(), dynamic_cast<MyPenShape*>(myShape)->qline.p2());
+
+            //painter.drawPixmap(0,0,mPix);
+
+            //saving shapes in a vector
+            myShapeVector.push_back((MyPenShape*)(myShape));
+
+            dynamic_cast<MyPenShape*>(myShape)->setPoint1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
+
+            qDebug() << dynamic_cast<MyPenShape*>(myShapeVector[0])->qline; //dynamic_cast<MyPenShape*>(myShape)->qline.p1() << dynamic_cast<MyPenShape*>(myShape)->qline.p2();
+
+            painter.drawPixmap(0,0,mPix);
+        }
         else if(dynamic_cast<MyRectangleShape*>(myShape))
         {
             painter.drawRect(dynamic_cast<MyRectangleShape*>(myShape)->qRect);
@@ -155,6 +179,8 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         undoVar = false;
     }
     else if (drawStarted && !undoVar){
+
+
         // It created a QPainter object by taking  a reference
         // to the QPixmap object created earlier, then draws a line
         // using that object, then sets the earlier painter object
@@ -167,6 +193,9 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         {
             tempPainter.drawRect(dynamic_cast<MyRectangleShape*>(myShape)->qRect);
         }
+        else if(dynamic_cast<MyPenShape*>(myShape)){
+          // tempPainter.drawLine(dynamic_cast<MyPenShape*>(myShape)->qline);
+        }
         else if(dynamic_cast<MyLineShape*>(myShape))
         {
             tempPainter.drawLine(dynamic_cast<MyLineShape*>(myShape)->qline);
@@ -178,6 +207,7 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
             //saving shapes in a vector
             myShapeVector.push_back((myShape));
 
+           // dynamic_cast<MyPenShape*>(myShape)->qline.setP1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
         painter.drawPixmap(0,0,mPix);
         undoVar = false;
     }
@@ -200,9 +230,16 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
             {
                 tempPainter.drawRect(dynamic_cast<MyRectangleShape*>(myShapeVector[i])->qRect);
             }
+            else if(dynamic_cast<MyPenShape*>(myShapeVector[i]))
+            {
+//                tempPainter.drawLine(dynamic_cast<MyPenShape*>(myShapeVector[i])->qline);
+                tempPainter.drawLine(dynamic_cast<MyPenShape*>(myShapeVector[i])->qline) ; //.p1(), dynamic_cast<MyPenShape*>(myShapeVector[i])->qline.p2());
+                qDebug() << dynamic_cast<MyPenShape*>(myShapeVector[i])->qline;
+            }
             else if(dynamic_cast<MyLineShape*>(myShapeVector[i]))
             {
                 tempPainter.drawLine(dynamic_cast<MyLineShape*>(myShapeVector[i])->qline);
+                qDebug() << dynamic_cast<MyLineShape*>(myShapeVector[i])->qline;
             }
             else if(dynamic_cast<MyEllipseShape*>(myShapeVector[i])){
                 tempPainter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShapeVector[i])->qEllipse);
@@ -211,6 +248,7 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         painter.drawPixmap(0,0,mPix);
         }
     }
+
 
     painter.end();
 }

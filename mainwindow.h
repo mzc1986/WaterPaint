@@ -22,6 +22,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_actionPen_triggered();
     void on_actionPlace_a_window_triggered();
     void on_actionTile_triggered();
     void on_actionCascade_triggered();

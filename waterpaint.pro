@@ -18,7 +18,8 @@ SOURCES += main.cpp\
 #    shapes.cpp \
     mylineshape.cpp \
     myrectangleshape.cpp \
-    myellipseshape.cpp
+    myellipseshape.cpp \
+    mypenshape.cpp
 
 CONFIG += c++11
 
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     shapes.h \
     mylineshape.h \
     myrectangleshape.h \
-    myellipseshape.h
+    myellipseshape.h \
+    mypenshape.h
 
 FORMS    += mainwindow.ui
 
