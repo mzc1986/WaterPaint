@@ -18,24 +18,26 @@ public:
     bool mousePressed;
     bool drawStarted;
     int selectedTool;
+    bool undoVar;
+
     void setPenColor(const QColor &color);
     void setPenWidth(int w);
+
     QColor penColor() const {return myPenColor;}
     int penWidth() const {return myPenWidth;}
-    ~MyCustomWidget();
 
     //Creating a vector to store the shapes
+    Shapes *myShape;
     vector<Shapes*> myShapeVector;
 
     bool loadFile(const QString &fileName);
-
     void setCurrentFile(const QString &fileName);
-    QSize sizeHint() const;
     void setDrawingObject(Shapes *b);
-    Shapes *myShape;
 
+    QSize sizeHint() const;
     void printShapes();
-    bool undoVar;
+    ~MyCustomWidget();
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -48,9 +50,6 @@ private:
     Ui::MyCustomWidget *ui;
     QPainter painter;
     QPixmap mPix;
-    //QLine mLine;
-    //QRect mRect;
-    //QRect mEllipse;
     QString curFile;
     bool isUntitled;
 

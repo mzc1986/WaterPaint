@@ -45,7 +45,6 @@ void MainWindow::on_actionPlace_a_window_triggered()
 void MainWindow::on_actionTile_triggered()
 {
     ui->myMDI->tileSubWindows();
-
 }
 
 void MainWindow::on_actionCascade_triggered()

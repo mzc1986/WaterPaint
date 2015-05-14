@@ -8,14 +8,22 @@ using namespace std;
 
 class Shapes
 {
-public:
-    //Shapes();
+protected:
+    //These points will be shared by every object
     QPoint p1;
     QPoint p2;
 
     QColor myPenColor;
     int myPenWidth;
 
-    virtual void setPoint1(QPoint p1) {cout << "Shape::1 \n";};
-    virtual void setPoint2(QPoint p2) {cout << "Shapre::2 \n";};
+public:
+    //Mutators
+    virtual void setPoint1(const QPoint& point1) {};
+    virtual void setPoint2(const QPoint& point2) {};
+    virtual bool setColor(const QColor& color){};
+    virtual bool setWidth(const int width){};
+
+    //Accessors
+    virtual QColor getColor() const {} ; // read only function to member
+    virtual int getWidth() const {};
 };

@@ -16,18 +16,15 @@
 using namespace std;
 
 MyCustomWidget::MyCustomWidget(QWidget *parent) :
-    QWidget(parent)//,
-  //ui(new Ui::MyCustomWidget)
+    QWidget(parent)
 {
-    //ui->setupUi(this);
 
-    mPix = QPixmap(QWidget::size()); //400,400
+    mPix = QPixmap(QWidget::size());
     mPix.fill(Qt::white);
-    //painter.begin(&mPix);
 
     //Default is a LineShape, so we save a MyLineShape
     // pointer to myShape
-    MyLineShape *mL = new MyLineShape;
+    MyLineShape *mL = new MyLineShape(Qt::blue,1);
     myShape = mL;
 
     //set everything to false as nothing has started yet
@@ -41,8 +38,6 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
     myPenWidth = 1;
 
     undoVar = false;
-
-    //connect(ui.)
 }
 
 void MyCustomWidget::setDrawingObject(Shapes *b){
@@ -51,22 +46,6 @@ void MyCustomWidget::setDrawingObject(Shapes *b){
     //for later use
     myShape = b;
 
-}
-
-void MyCustomWidget::printShapes(){
-//    for(std::vector<Shapes*>::iterator it = myShapeVector.begin(); it != myShapeVector.end(); ++it) {
-//        /* std::cout << *it; ... */
-//        //cout << *it;
-//        //cout << myShapeVector[0];
-//        //myShapeVector;
-//        qDebug() << dynamic_cast<MyLineShape*>(myShapeVector[1])->qline.p1();
-//        qDebug() << "Print something";
-//    }
-
-
-    undoVar = true;
-    update();
-    //qDebug() << myShapeVector.;
 }
 
 void MyCustomWidget::setPenColor(const QColor &color)
@@ -84,23 +63,25 @@ void MyCustomWidget::mousePressEvent(QMouseEvent* event){
     //Mouse is pressed for the first time
     mousePressed = true;
 
+    myShape->setColor(myPenColor);
+    myShape->setWidth(myPenWidth);
     /*Checking if the MyShape object is the MyLineShape
     type then create a new object of that type*/
     if(dynamic_cast<MyLineShape*>(myShape))
     {
-        myShape = new MyLineShape;
+        myShape = new MyLineShape(myShape->getColor(),myShape->getWidth());
     }
     else if(dynamic_cast<MyPenShape*>(myShape))
     {
-        myShape = new MyPenShape;
+        myShape = new MyPenShape(myShape->getColor(),myShape->getWidth());
     }
     else if(dynamic_cast<MyRectangleShape*>(myShape))
     {
-        myShape = new MyRectangleShape;
+        myShape = new MyRectangleShape(myShape->getColor(),myShape->getWidth());
     }
     else if(dynamic_cast<MyEllipseShape*>(myShape))
     {
-        myShape = new MyEllipseShape;
+        myShape = new MyEllipseShape(myShape->getColor(),myShape->getWidth());
     }
     //depending on Object type setPoint methods of
     //Different object is called
@@ -131,7 +112,7 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
 
     painter.begin(this);
 
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+    painter.setPen(QPen(myShape->getColor(), myShape->getWidth(), Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
 
     //When the mouse is pressed
@@ -148,21 +129,18 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
             painter.drawLine(dynamic_cast<MyLineShape*>(myShape)->qline);
         }
         else if(dynamic_cast<MyPenShape*>(myShape)){
-            //dynamic_cast<MyPenShape*>(myShape)->setPoint1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
-            //dynamic_cast<MyPenShape*>(myShape)->qline.setP1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
+
            QPainter tPainter(&mPix);
-           tPainter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+           tPainter.setPen(QPen(myShape->getColor(), myShape->getWidth(), Qt::SolidLine, Qt::RoundCap,
                                    Qt::RoundJoin));
            tPainter.drawLine(dynamic_cast<MyPenShape*>(myShape)->qline.p1(), dynamic_cast<MyPenShape*>(myShape)->qline.p2());
-
-            //painter.drawPixmap(0,0,mPix);
 
             //saving shapes in a vector
             myShapeVector.push_back((MyPenShape*)(myShape));
 
             dynamic_cast<MyPenShape*>(myShape)->setPoint1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
 
-            qDebug() << dynamic_cast<MyPenShape*>(myShapeVector[0])->qline; //dynamic_cast<MyPenShape*>(myShape)->qline.p1() << dynamic_cast<MyPenShape*>(myShape)->qline.p2();
+            qDebug() << dynamic_cast<MyPenShape*>(myShapeVector[0])->qline;
 
             painter.drawPixmap(0,0,mPix);
         }
@@ -186,7 +164,7 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
         // using that object, then sets the earlier painter object
         // with the newly modified QPixmap object
         QPainter tempPainter(&mPix);
-        tempPainter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+        tempPainter.setPen(QPen(myShape->getColor(), myShape->getWidth(), Qt::SolidLine, Qt::RoundCap,
                                 Qt::RoundJoin));
 
         if(dynamic_cast<MyRectangleShape*>(myShape))
@@ -207,7 +185,6 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
             //saving shapes in a vector
             myShapeVector.push_back((myShape));
 
-           // dynamic_cast<MyPenShape*>(myShape)->qline.setP1(dynamic_cast<MyPenShape*>(myShape)->qline.p2());
         painter.drawPixmap(0,0,mPix);
         undoVar = false;
     }
@@ -219,43 +196,38 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
 
         mPix.fill(Qt::white);
         QPainter tempPainter(&mPix);
-        tempPainter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
-                                Qt::RoundJoin));
+
+        Shapes* p_derived = nullptr;
 
         unsigned int size = myShapeVector.size();
         qDebug() << size;
         for (unsigned int i = 0; i < size; i++)
         {
+            p_derived = myShapeVector[i];
+            tempPainter.setPen(QPen(p_derived->getColor(), p_derived->getWidth(),Qt::SolidLine, Qt::RoundCap,
+                                    Qt::RoundJoin));
+
             if(dynamic_cast<MyRectangleShape*>(myShapeVector[i]))
             {
                 tempPainter.drawRect(dynamic_cast<MyRectangleShape*>(myShapeVector[i])->qRect);
             }
             else if(dynamic_cast<MyPenShape*>(myShapeVector[i]))
             {
-//                tempPainter.drawLine(dynamic_cast<MyPenShape*>(myShapeVector[i])->qline);
-                tempPainter.drawLine(dynamic_cast<MyPenShape*>(myShapeVector[i])->qline) ; //.p1(), dynamic_cast<MyPenShape*>(myShapeVector[i])->qline.p2());
-                qDebug() << dynamic_cast<MyPenShape*>(myShapeVector[i])->qline;
+                tempPainter.drawLine(dynamic_cast<MyPenShape*>(myShapeVector[i])->qline) ;
+            }
+            else if(dynamic_cast<MyEllipseShape*>(myShapeVector[i])){
+                tempPainter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShapeVector[i])->qEllipse);
             }
             else if(dynamic_cast<MyLineShape*>(myShapeVector[i]))
             {
                 tempPainter.drawLine(dynamic_cast<MyLineShape*>(myShapeVector[i])->qline);
-                qDebug() << dynamic_cast<MyLineShape*>(myShapeVector[i])->qline;
-            }
-            else if(dynamic_cast<MyEllipseShape*>(myShapeVector[i])){
-                tempPainter.drawEllipse(dynamic_cast<MyEllipseShape*>(myShapeVector[i])->qEllipse);
             }
         }
         painter.drawPixmap(0,0,mPix);
         }
     }
 
-
     painter.end();
-}
-
-MyCustomWidget::~MyCustomWidget()
-{
-    //delete ui;
 }
 
 bool MyCustomWidget::loadFile(const QString &fileName)
@@ -299,4 +271,25 @@ QSize MyCustomWidget::sizeHint() const
     return QSize(72 * fontMetrics().width('x'),
                  25 * fontMetrics().lineSpacing());
 
+}
+
+MyCustomWidget::~MyCustomWidget()
+{
+    //delete ui;
+}
+
+void MyCustomWidget::printShapes(){
+//    for(std::vector<Shapes*>::iterator it = myShapeVector.begin(); it != myShapeVector.end(); ++it) {
+//        /* std::cout << *it; ... */
+//        //cout << *it;
+//        //cout << myShapeVector[0];
+//        //myShapeVector;
+//        qDebug() << dynamic_cast<MyLineShape*>(myShapeVector[1])->qline.p1();
+//        qDebug() << "Print something";
+//    }
+
+
+    undoVar = true;
+    update();
+    //qDebug() << myShapeVector.;
 }

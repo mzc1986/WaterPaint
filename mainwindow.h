@@ -18,7 +18,8 @@ public:
     QMdiSubWindow *findMdiChild(const QString &fileName);
     bool openFile(const QString &fileName);
     MyCustomWidget *createMyCustomWidgetChild();
-
+    QColor newColor;
+    int newWidth;
     ~MainWindow();
 
 private slots:
