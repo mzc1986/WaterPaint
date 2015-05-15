@@ -38,6 +38,10 @@ public:
     void printShapes();
     ~MyCustomWidget();
 
+    bool saveAs();
+
+    bool saveAsType(const QByteArray &fileFormat);
+    bool saveFile(const QString &fileName, const QByteArray &fileFormat);
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

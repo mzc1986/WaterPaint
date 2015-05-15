@@ -21,9 +21,9 @@ public:
     QColor newColor;
     int newWidth;
     ~MainWindow();
+    MyCustomWidget* activeMdiChild();
 
 private slots:
-    void on_actionPen_triggered();
     void on_actionPlace_a_window_triggered();
     void on_actionTile_triggered();
     void on_actionCascade_triggered();
@@ -36,8 +36,20 @@ private slots:
     void on_actionEllipse_triggered();
     void on_actionUndo_triggered();
 
-    MyCustomWidget* activeMdiChild();
+    void saveUsingType();
+
+    void on_actionSave_triggered();
+
+    void on_actionAbout_triggered();
+
+    void on_actionSource_triggered();
+
+    void on_actionPencil_triggered();
 
 private:
     Ui::MainWindow *ui;
+    QList<QAction *> saveAsActs;
+    QMenu *saveAsMenu;
+
+    void createActions();
 };

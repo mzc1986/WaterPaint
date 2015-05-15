@@ -38,7 +38,53 @@ MyCustomWidget::MyCustomWidget(QWidget *parent) :
     myPenWidth = 1;
 
     undoVar = false;
+
+    static int sequenceNumber = 1;
+
+    isUntitled = true;
+    curFile = tr("drawing%1").arg(sequenceNumber++);
+    setWindowTitle(curFile + "[*]");
+
+    //connect(document(), SIGNAL(contentsChanged()),
+      //      this, SLOT(documentWasModified()));
+
 }
+
+
+bool MyCustomWidget::saveAs()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                    curFile);
+    if (fileName.isEmpty())
+        return false;
+
+    return saveFile(fileName, "jpg");
+}
+
+//
+bool MyCustomWidget::saveAsType(const QByteArray &fileFormat)
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                    curFile+"."+fileFormat);
+    if (fileName.isEmpty())
+        return false;
+    //fileName.append("."+fileFormat);
+    return saveFile(fileName, fileFormat);
+}
+
+
+bool MyCustomWidget::saveFile(const QString &fileName, const QByteArray &fileFormat )
+{
+    if (fileName.isEmpty()) {
+        return false;
+    } else {
+        return mPix.save(fileName, fileFormat);
+    }
+
+    setCurrentFile(fileName);
+    return true;
+}
+
 
 void MyCustomWidget::setDrawingObject(Shapes *b){
 
@@ -190,23 +236,33 @@ void MyCustomWidget::paintEvent(QPaintEvent *event){
     }
     else if (undoVar){
 
+        //Check if myShapeVector exists
         if(!myShapeVector.empty())
         {
+        //We remove the last element
         myShapeVector.pop_back();
 
+        //set our drawing area to default
         mPix.fill(Qt::white);
         QPainter tempPainter(&mPix);
 
-        Shapes* p_derived = nullptr;
+        //declare a null pointer to store values
+        Shapes* temp = nullptr;
 
+        //check vector size
         unsigned int size = myShapeVector.size();
         qDebug() << size;
+
+        //redraw all the items
         for (unsigned int i = 0; i < size; i++)
         {
-            p_derived = myShapeVector[i];
-            tempPainter.setPen(QPen(p_derived->getColor(), p_derived->getWidth(),Qt::SolidLine, Qt::RoundCap,
+            //store current myShapeVector in
+            temp = myShapeVector[i];
+            //Set pen depending on the current item Color and Width
+            tempPainter.setPen(QPen(temp->getColor(), temp->getWidth(),Qt::SolidLine, Qt::RoundCap,
                                     Qt::RoundJoin));
 
+            //depending on the shape type draw the object
             if(dynamic_cast<MyRectangleShape*>(myShapeVector[i]))
             {
                 tempPainter.drawRect(dynamic_cast<MyRectangleShape*>(myShapeVector[i])->qRect);
@@ -275,7 +331,8 @@ QSize MyCustomWidget::sizeHint() const
 
 MyCustomWidget::~MyCustomWidget()
 {
-    //delete ui;
+    delete myShape;
+    myShapeVector.clear();
 }
 
 void MyCustomWidget::printShapes(){

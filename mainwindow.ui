@@ -21,7 +21,7 @@
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
       <item row="0" column="0">
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="btnSelection">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -41,7 +41,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="btnEraser">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -61,7 +61,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="btnColorSelction">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -81,7 +81,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton_5">
+       <widget class="QPushButton" name="btnMagnify">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -181,7 +181,7 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QPushButton" name="pushButton_10">
+       <widget class="QPushButton" name="btnLasso">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -201,7 +201,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QPushButton" name="pushButton_11">
+       <widget class="QPushButton" name="btnText">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -221,7 +221,7 @@
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QPushButton" name="pushButton_12">
+       <widget class="QPushButton" name="btnSpray">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -241,7 +241,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QPushButton" name="pushButton_13">
+       <widget class="QPushButton" name="btnBucket">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -282,6 +282,8 @@
     </property>
     <addaction name="actionPlace_a_window"/>
     <addaction name="OpenFile"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuDraw">
@@ -292,13 +294,13 @@
     <addaction name="actionLine"/>
     <addaction name="actionRect"/>
     <addaction name="actionEllipse"/>
-    <addaction name="actionPen_Color"/>
-    <addaction name="actionPen_Width"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionPen_Color"/>
+    <addaction name="actionPen_Width"/>
     <addaction name="actionUndo"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -308,10 +310,18 @@
     <addaction name="actionTile"/>
     <addaction name="actionCascade"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionSource"/>
+   </widget>
    <addaction name="menuAdd_somethig"/>
    <addaction name="menuDraw"/>
    <addaction name="menuEdit"/>
    <addaction name="menuWindow"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -323,6 +333,10 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionPlace_a_window">
+   <property name="icon">
+    <iconset resource="paintResource.qrc">
+     <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
+   </property>
    <property name="text">
     <string>New</string>
    </property>
@@ -331,6 +345,10 @@
    </property>
   </action>
   <action name="OpenFile">
+   <property name="icon">
+    <iconset resource="paintResource.qrc">
+     <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
+   </property>
    <property name="text">
     <string>Open</string>
    </property>
@@ -348,12 +366,12 @@
   </action>
   <action name="actionLine">
    <property name="text">
-    <string>line</string>
+    <string>Line</string>
    </property>
   </action>
   <action name="actionRect">
    <property name="text">
-    <string>rectangle</string>
+    <string>Rectangle</string>
    </property>
   </action>
   <action name="actionTile">
@@ -378,7 +396,7 @@
   </action>
   <action name="actionEllipse">
    <property name="text">
-    <string>ellipse</string>
+    <string>Ellipse</string>
    </property>
   </action>
   <action name="actionUndo">
@@ -392,6 +410,31 @@
   <action name="actionPencil">
    <property name="text">
     <string>Pencil</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="paintResource.qrc">
+     <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSource">
+   <property name="text">
+    <string>Source..</string>
    </property>
   </action>
  </widget>
